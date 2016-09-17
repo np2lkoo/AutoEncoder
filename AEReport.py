@@ -8,8 +8,6 @@ import matplotlib.ticker as tick
 from collections import Counter
 import numpy as np
 
-plt.style.use('ggplot')
-
 # This is a Report of Auto Encoder Expriment with matplotlib
 class AEReport(object):
     # To define the position of the graphs and images.
@@ -50,7 +48,7 @@ class AEReport(object):
         self.last_ent_diff = 0.0
         self.last_img_diff = 0
         self.initfilter = []
-
+        plt.style.use('ggplot')
 
     def draw_digit(self, data, pos_r, pos_c, n_size):
         ax1 = plt.subplot(self.gs[pos_r, pos_c])
@@ -83,7 +81,7 @@ class AEReport(object):
         ax2.plot(data, lw=1)
         # ax2.set_title("Cost/Epoch",  horizontalalignment='left', verticalalignment='bottom')
         ax2.set_ylabel("Cost  (log scale)")
-        ax2.set_xlabel("Cost Fig.  x=epoch")
+        ax2.set_xlabel("Cost Fig.  horizontal axis=epoch")
         ax2.set_yscale('log')
         #ax2.set_ylim(plt.ylim()[0], 10.0) #Upper Limit 10.0
         #ax2.set_ylim(1, 10)
@@ -127,7 +125,7 @@ class AEReport(object):
         ax3tw.plot(x, dataB,  'd', markersize=4, markerfacecolor='blue', label="b")
         # ax2.set_title("Cost/Epoch",  horizontalalignment='left', verticalalignment='bottom')
         ax3.set_ylabel("W Min/Mean/max")
-        ax3.set_xlabel("Last W Range & b Bias Fig.  x=Node Number")
+        ax3.set_xlabel("Last W Range & b Bias Fig.  horiz axis=Node Number")
         ax3.set_xlim(-1, len(y_mean))
         #Reset Y Limit (Adjust Zero Lebel)
         #w_limit = math.ceil(np.max((np.max(dataW), -np.min(dataW))))
@@ -159,7 +157,7 @@ class AEReport(object):
             ax4.plot(x, z + (9.0 - sample), label=str(sample))
         ax4.plot(x, zsum, color="b", label="Sum")
         ax4.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0,  prop={'size' : 6})
-        ax4.set_xlabel("Last Z=f(Wx+b) Range Fig.  x=Node Number")
+        ax4.set_xlabel("Last Z=f(Wx+b) Range Fig.  horiz axis=Node Number")
         ax4.xaxis.set_minor_locator(tick.MultipleLocator(2))
         ax4.yaxis.set_minor_locator(tick.MultipleLocator(1))
 
@@ -179,14 +177,14 @@ class AEReport(object):
                  ("Epoch Limit:",     c2, r1, ss, f1, 'right', 'top'),
                  ("Drop Out:",   c2, r2, ss, f1, 'right', 'top'),
                  ("Train Shuffle:",     c2, r3, ss, f1, 'right', 'top'),
-                 ("Optimizer:",   c2, r4, ss, f1, 'right', 'top'),
+                 ("W untied:",   c2, r4, ss, f1, 'right', 'top'),
                  ("Alpha Ratio:",    c3, r1, ss, f1, 'right', 'top'),
                  ("Beta Ratio:",     c3, r2, ss, f1, 'right', 'top'),
                  ("Normalization:",      c3, r3, ss, f1, 'right', 'top'),
                  ("Whitening",    c3, r4, ss, f1, 'right', 'top'),
                  ("Train SubScale:",    c4, r1, ss, f1, 'right', 'top'),
                  ("W Transport:",     c4, r2, ss, f1, 'right', 'top'),
-                 ("Option3:",      c4, r3, ss, f1, 'right', 'top'),
+                 ("Optimizer:",      c4, r3, ss, f1, 'right', 'top'),
                  ("Option4:",    c4, r4, ss, f1, 'right', 'top'),
                  ("Option5:",    c5, r1, ss, f1, 'right', 'top'),
                  ("6:",     c5, r2, ss, f1, 'right', 'top'),
@@ -208,13 +206,14 @@ class AEReport(object):
             (my_ae.epoch_limit, c2, r1, ss, f1, 'left', 'top'),
             (my_ae.dropout, c2, r2, ss, f1, 'left', 'top'),
             (my_ae.shuffle, c2, r3, ss, f1, 'left', 'top'),
-            (my_ae.optimizer, c2, r4, ss, f1, 'left', 'top'),
+            (my_ae.untied, c2, r4, ss, f1, 'left', 'top'),
             (my_ae.alpha, c3, r1, ss, f1, 'left', 'top'),
             (my_ae.beta, c3, r2, ss, f1, 'left', 'top'),
             (my_ae.normalization, c3, r3, ss, f1, 'left', 'top'),
             (my_ae.whitening, c3, r4, ss, f1, 'left', 'top'),
             ("1/" + str(my_ae.sub_scale), c4, r1, ss, f1, 'left', 'top'),
             (my_ae.Wtransport, c4, r2, ss, f1, 'left', 'top'),
+            (my_ae.optimizer, c4, r3, ss, f1, 'left', 'top'),
             ("Koo Wells", c6, r1, ss, f1, 'left', 'top'),
             (my_ae.exp_date, c6, r2, ss, f1, 'left', 'top'),
             ("None", c6, r3, ss, f1, 'left', 'top'),
@@ -248,7 +247,7 @@ class AEReport(object):
 
     def report_footer(self, my_ae, my_train):
         c1, c2, c3, c4, c5, c6 = 0.4, 0.7, 0.0, 0.0, 0.0, 0.0
-        r1, r2, r3, r4, r5 = 0.96, 0.75, 0.5, 0.25, 0.0
+        r1, r2, r3, r4, r5 = 0.97, 0.73, 0.49, 0.25, 0.0
         sl, sm, ss = 11, 10, 9
         f1 = 'serif'
         use_W = 0.0
@@ -311,14 +310,14 @@ class AEReport(object):
 
     def report_label(self, my_ae, my_select):
         c1, c2, c3, c4, c5, c6 = 0.01, 0.05, 0.04, 0.12, 0.95, 0.99
-        r1, r2, r3, r4, r5 = 0.98, 0.9, 0.62, 0.05, 0.01
+        r1, r2, r3, r4, r5, r6 = 0.98, 0.9, 0.64, 0.05, 0.31, 0.01
         sl, sm, ss, sll = 11, 8, 7, 13
         f1 = 'serif'
         index = [[("period/", c1, r2, sm, f1, 'left', 'top'),
                  ("(epoch)", 0, r4, sm, f1, 'left', 'bottom'),
                  ("Wmax", c6, r1, ss, f1, 'right', 'top'),
                  ("mean", c6, r3, ss, f1, 'right', 'top'),
-                 ("Wmin", c6, r5, ss, f1, 'right', 'bottom'),
+                 ("Wmin", c6, r5, ss, f1, 'right', 'top'),
                   ],
                  [("W", c2, r2, sll, f1, 'left', 'top'),
                   ("range", c5, r4, sm, f1, 'right', 'bottom'),
@@ -334,20 +333,20 @@ class AEReport(object):
                   ("Wgain", c6, r3, ss, f1, 'right', 'top'),
                   ("b max", c1, r1, ss, f1, 'left', 'top'),
                   (" mean", c1, r3, ss, f1, 'left', 'top'),
-                  ("b min", c1, r5, ss, f1, 'left', 'bottom'),
+                  ("b min", c1, r5, ss, f1, 'left', 'top'),
                   ],
                  [("x_hat", c1, r1, sll, f1, 'left', 'top'),
                   ("of Sample MNIST DATA & calibration (encode/decode by W-Layer)", c4, r1, sm, f1, 'left', 'top'),
                   ],
                  [("Cost", c1, r1, ss, f1, 'left', 'top'),
                   ("Img-diff", c1, r3, ss, f1, 'left', 'top'),
-                  ("ent-diff", c1, r5, ss, f1, 'left', 'bottom'),
+                  ("ent-diff", c1, r5, ss, f1, 'left', 'top'),
                   ],
                  ]
         select_index = [[("[n]", c2, r4, sm, f1, 'center', 'bottom'),
                          ],
                         ]
-        sub_index = [[("n", c3, r5, sm, f1, 'center', 'bottom'),
+        sub_index = [[("n", c3, r6, sm, f1, 'center', 'bottom'),
                       ],
                      ]
 
@@ -404,14 +403,14 @@ class AEReport(object):
     def report_index1(self, my_ae):
         period = 0
         c1, c2, c3, c4, c5, c6 = 0.01, 0.05, 0.04, 0.0, 0.95, 0.99
-        r1, r2, r3, r4, r5 = 0.98, 0.9, 0.62, 0.05, 0.01
+        r1, r2, r3, r4, r5, r6 = 0.98, 0.9, 0.64, 0.05, 0.31, 0.01
         sl, sm, ss = 9, 8, 7.6
         f1 = 'serif'
         index = [("Period /", c2, r2, sl, f1, 'left', 'top'),     #
                  ("(Epoch)", 0, r4, sm, f1, 'left', 'bottom'),
                  ("Wmax", c6, r1, sm, f1, 'right', 'top'),
                  ("mean", c6, r3, sm, f1, 'right', 'top'),
-                 ("Wmin", c6, r5, sm, f1, 'right', 'bottom'),
+                 ("Wmin", c6, r5, sm, f1, 'right', 'top'),
                  ]
         for period in range(np.int(np.log2(my_ae.epoch_limit)) + 2):  # Since output a initial state, range + 2
             rd = self.repdef['Index1']
@@ -441,14 +440,14 @@ class AEReport(object):
 
     def report_index2(self, my_ae, my_train):
         c1, c2, c3, c4, c5, c6 = 0.01, 0.05, 0.04, 0.0, 0.95, 0.99
-        r1, r2, r3, r4, r5 = 0.98, 0.9, 0.62, 0.05, 0.01
+        r1, r2, r3, r4, r5, r6 = 0.98, 0.9, 0.64, 0.05, 0.31, 0.01
         sl, sm, ss = 9, 8, 7.6
         f1 = 'serif'
-        index = [("bmax", c1, r1, ss, f1, 'left', 'top'),
-                 ("mean", c1, r3, ss, f1, 'left', 'top'),
-                 ("bmin", c1, r5, ss, f1, 'left', 'bottom'),
-                 ("Time", c6, r1, ss, f1, 'right', 'top'),
-                 ("Wgain", c6, r3, ss, f1, 'right', 'top'),
+        index = [("bmax", c1, r1, sm, f1, 'left', 'top'),
+                 ("mean", c1, r3, sm, f1, 'left', 'top'),
+                 ("bmin", c1, r5, sm, f1, 'left', 'top'),
+                 ("Time", c6, r1, sm, f1, 'right', 'top'),
+                 ("Wgain", c6, r3, sm, f1, 'right', 'top'),
                  ]
         for period in range(np.int(np.log2(my_ae.epoch_limit)) + 2):    # Since output a initial state, range + 2
             rd = self.repdef['Index2']
@@ -484,12 +483,12 @@ class AEReport(object):
 
     def report_index5(self, my_ae, my_train):
         c1, c2, c3, c4, c5, c6 = 0.01, 0.05, 0.04, 0.0, 0.95, 0.99
-        r1, r2, r3, r4, r5 = 0.98, 0.9, 0.62, 0.05, 0.01
+        r1, r2, r3, r4, r5, r6 = 0.98, 0.9, 0.64, 0.05, 0.31, 0.01
         sl, sm, ss = 9, 8, 7.6
         f1 = 'serif'
-        index = [("cost", c6, r1, ss, f1, 'right', 'top'),
-                 ("imgdiff", c6, r3, ss, f1, 'right', 'top'),
-                 ("entdiff", c6, r5, ss, f1, 'right', 'bottom'),
+        index = [("cost", c6, r1, sm, f1, 'right', 'top'),
+                 ("imgdiff", c6, r3, sm, f1, 'right', 'top'),
+                 ("entdiff", c6, r5, sm, f1, 'right', 'top'),
                  ]
         for period in range(np.int(np.log2(my_ae.epoch_limit)) + 2):    # Since output a initial state, range + 2
             rd = self.repdef['Index5']
@@ -508,7 +507,7 @@ class AEReport(object):
                     disp = disp2 = "{0:.1f}".format(self.last_img_diff)
                 if j == 2:
                     disp = "{0:.1f}".format(self.last_ent_diff)
-                    print ("Entropy/Img Diff = " + disp + "/" + disp2)
+                    print ("Entropy/Img Diff(" + str(period) + ") = " + disp + "/" + disp2)
                 axindex.annotate(disp, xy=(index[j][1], index[j][2]), xycoords='axes fraction',
                                  fontsize=index[j][3],
                                  fontname=index[j][4],
@@ -540,7 +539,7 @@ class AEReport(object):
 
     def report_index3(self, my_ae):
         c1, c2, c3, c4, c5, c6 = 0.01, 0.05, 0.04, 0.0, 0.95, 0.99
-        r1, r2, r3, r4, r5 = 0.98, 0.9, 0.62, 0.05, 0.01
+        r1, r2, r3, r4, r5, r6 = 0.98, 0.9, 0.64, 0.05, 0.31, 0.01
         sl, sm, ss = 13, 8, 7
         f1 = 'serif'
         index3 = [("x", c2, r1, sl, f1, 'left', 'top'),
@@ -561,7 +560,7 @@ class AEReport(object):
 
     def report_index4(self, my_ae):
         c1, c2, c3, c4, c5, c6 = 0.01, 0.05, 0.04, 0.0, 0.95, 0.99
-        r1, r2, r3, r4, r5 = 0.98, 0.9, 0.62, 0.05, 0.01
+        r1, r2, r3, r4, r5, r6 = 0.98, 0.9, 0.64, 0.05, 0.31, 0.01
         sl, sm, ss = 13, 8, 7
         f1 = 'serif'
         index4 = [("y", c2, r1, sl, f1, 'left', 'top'),
@@ -744,13 +743,14 @@ class AEReport(object):
 
     def gray_scale(self, w):
         b = w - np.min(w) * np.ones(len(w))
-        c = map(int, b / np.max(b + 0.00001) * 255)
+        bb =  b / np.max(b + 0.00001) * 255
+        c = bb.astype(np.int64)
         return c
 
     def entropy(self, vec):
         entropys = list()
         count = Counter(vec)
-        countall = float(np.sum(count.values()))
+        countall = float(np.sum(list(count.values())))
         for item in count.items():
             counteach = item[1]
             prob = counteach / countall
@@ -793,12 +793,14 @@ class AEReport(object):
             noi = "NoNoise"
         else:
             noi = "Noise" +  str(my_ae.noise)
+
+        plt.show()
+
         # Save the report
         plt.savefig("./" + my_ae.exp_id + "_" + my_ae.func.name + "_Hidden" + str(my_ae.n_hidden) + "_" +
                     noi + "_" + dout + "_Epoch" + str(my_ae.epoch_limit) + "_SubScale" + str(my_ae.sub_scale) +
-                    "_Wtran"+ my_ae.Wtransport +".png",
+                    "_Wtran" + my_ae.Wtransport + ".png",
                     bbox_inches="tight", pad_inches=0.05)
-        plt.show()
 
     # For Experiment Code
     def mkKernel(self, ks, sig, th, lm, ps):

@@ -11,7 +11,7 @@ from AutoEncoder import KooAutoEncoder
 par_hidden = 100    # Hidden Layer Node count
 par_visible = 784   # Visible MNIST pix. Image 28 * 28
 par_noise = 0.3     # Noise Ratio  0.0 - 0.9
-par_untied = True   # Weight Untied (Tied if False)
+par_untied = False   # Weight Untied (Tied if False)
 par_sub_scale = 1000  # if 1000 then only 1/1000 data use in epoch
 par_batch_size = 10*2  # it must Multiple of 10. otherwise you bias learning
 par_epoch = 2**10   # epoch limit count; each 2**n count up Period(Milestone)
@@ -82,7 +82,7 @@ if not train:
     try:
         # To report the stored learning results
         print("Loading Object")
-        kooae.load_ae("./K160914-0900.kae")  # For example
+        kooae.load_ae("./K160916-2039.kae")  # For example
         # If you restored from the pickle, and re-set the report object.
         kooae.reset_report()
     except:

@@ -6,9 +6,14 @@ from __future__ import print_function
 # exclude next setp # if you use jupyter notebook
 #%matplotlib inline
 
-import cPickle as pickle
+try:
+   import cPickle as pickle
+except:
+   import pickle
+
 import time
 from datetime import datetime
+import sys
 import copy
 import numpy as np
 import math
@@ -212,7 +217,7 @@ class KooAutoEncoder(object):
         self.b2rec.append(self.b2.copy())
 
         # epoch display has from 1, the internal variable from 0.
-        batch_num = len(X) / (batch_size * self.sub_scale)
+        batch_num = int(len(X) / (batch_size * self.sub_scale))
         for epoch in range(epochs):
             total_cost = 0.0
             start_time = time.clock()
@@ -257,7 +262,7 @@ class KooAutoEncoder(object):
         print("--- Training has been completed ---")
 
     def dump_ae(self, save_path):
-        with open(save_path + self.exp_id + '.kae', 'w') as f:
+        with open(save_path + self.exp_id + '.kae', 'wb') as f:
             self.report = None
             d = {
                 "AE": self,
