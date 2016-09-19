@@ -794,13 +794,14 @@ class AEReport(object):
         else:
             noi = "Noise" +  str(my_ae.noise)
 
-        plt.show()
-
         # Save the report
         plt.savefig("./" + my_ae.exp_id + "_" + my_ae.func.name + "_Hidden" + str(my_ae.n_hidden) + "_" +
                     noi + "_" + dout + "_Epoch" + str(my_ae.epoch_limit) + "_SubScale" + str(my_ae.sub_scale) +
                     "_Wtran" + my_ae.Wtransport + ".png",
                     bbox_inches="tight", pad_inches=0.05)
+
+        plt.show()
+
 
     # For Experiment Code
     def mkKernel(self, ks, sig, th, lm, ps):
