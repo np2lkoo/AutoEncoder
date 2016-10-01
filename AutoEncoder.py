@@ -93,8 +93,6 @@ class KooAutoEncoder(object):
         self.whitening = 'None'
         self.sub_scale = sub_scale
         self.Wtransport = "init"
-        self.option3 = 'None'
-        self.option4 = 'None'
         self.option5 = 'None'
         self.option6 = 'None'
         self.option7 = 'None'
@@ -139,8 +137,8 @@ class KooAutoEncoder(object):
 
     def get_cost(self, x, z):
         eps = 1e-10
-        #cost =  - np.sum((x * np.log(z + eps) + (1.-x) * np.log(1.-z + eps))) / self.W1.size  #For Sigmoid
-        cost =  - np.sum((1. / 2) * (x - z) * (z - x)) / self.W1.size    #Square error mean
+        cost =  - np.sum((x * np.log(z + eps) + (1.-x) * np.log(1.-z + eps))) / self.W1.size  #For Sigmoid
+        #cost =  - np.sum((1. / 2) * (x - z) * (z - x)) / self.W1.size    #Square error mean
         return cost
 
     def get_cost_and_grad(self, x_batch, x2_batch, dnum):
@@ -160,7 +158,8 @@ class KooAutoEncoder(object):
             p = p * mask[ii]
             y = self.decode(p)
             if adjust[ii] != 0:
-                y = y * self.n_hidden / adjust[ii]
+                y_adj = y * self.n_hidden / adjust[ii]
+                y = y_adj * (y_adj < 1.0) + 1.0 * (y_adj >= 1.0)
             else:
                 y = x2
             cost += self.get_cost(x2, y)
