@@ -30,7 +30,7 @@ mnist = fetch_mldata('MNIST original')
 
 # mnist.data : 70,000 784-dimensional vector data
 mnist.data = mnist.data.astype(np.float32)
-mnist.data /= 255         # 0-1 of the data conversion
+mnist.data /= 255.0         # 0-1 of the data conversion
 
 # mnist.target : Correct data (teacher data)
 mnist.target = mnist.target.astype(np.int32)

@@ -103,7 +103,7 @@ class AEReport(object):
         ax2tw.set_ylabel("total entropy(|y - x_hat|)/100")
 
     def draw_last_Wb_range(self, my_ae, my_train):
-        my_period = np.int(np.log2(my_ae.epoch_limit))
+        my_period = np.int(np.log2(my_ae.epoch_limit) + 1)
         dataW = my_ae.get_W1(my_period)
         dataB = my_ae.get_b1(my_period)
         rd = self.repdef['LastWRangeFig']
@@ -142,7 +142,7 @@ class AEReport(object):
         print(" Fig. W Min/Mean/Max")
 
     def draw_last_Z_range(self, my_ae, my_train):
-        my_period = np.int(np.log2(my_ae.epoch_limit))
+        my_period = np.int(np.log2(my_ae.epoch_limit) + 1)
         dataW = my_ae.get_W1(my_period)
         dataB = my_ae.get_b1(my_period)
         rd = self.repdef['LastZFig']
@@ -179,14 +179,14 @@ class AEReport(object):
                  ("Train Shuffle:",     c2, r3, ss, f1, 'right', 'top'),
                  ("W untied:",   c2, r4, ss, f1, 'right', 'top'),
                  ("Alpha Ratio:",    c3, r1, ss, f1, 'right', 'top'),
-                 ("Beta Ratio:",     c3, r2, ss, f1, 'right', 'top'),
-                 ("Normalization:",      c3, r3, ss, f1, 'right', 'top'),
-                 ("Whitening",    c3, r4, ss, f1, 'right', 'top'),
+                 ("A*Bias Ratio:",     c3, r2, ss, f1, 'right', 'top'),
+                 ("Beta Ratio:",      c3, r3, ss, f1, 'right', 'top'),
+                 (":",    c3, r4, ss, f1, 'right', 'top'),
                  ("Train SubScale:",    c4, r1, ss, f1, 'right', 'top'),
                  ("W Transport:",     c4, r2, ss, f1, 'right', 'top'),
-                 ("Optimizer:",      c4, r3, ss, f1, 'right', 'top'),
-                 ("Option4:",    c4, r4, ss, f1, 'right', 'top'),
-                 ("Option5:",    c5, r1, ss, f1, 'right', 'top'),
+                 ("Normalization:",      c4, r3, ss, f1, 'right', 'top'),
+                 ("Whitening:",    c4, r4, ss, f1, 'right', 'top'),
+                 ("Optimizer:",    c5, r1, ss, f1, 'right', 'top'),
                  ("6:",     c5, r2, ss, f1, 'right', 'top'),
                  ("Option7:",      c5, r3, ss, f1, 'right', 'top'),
                  ("Option8:",    c5, r4, ss, f1, 'right', 'top'),
@@ -208,12 +208,18 @@ class AEReport(object):
             (my_ae.shuffle, c2, r3, ss, f1, 'left', 'top'),
             (my_ae.untied, c2, r4, ss, f1, 'left', 'top'),
             (my_ae.alpha, c3, r1, ss, f1, 'left', 'top'),
-            (my_ae.beta, c3, r2, ss, f1, 'left', 'top'),
-            (my_ae.normalization, c3, r3, ss, f1, 'left', 'top'),
-            (my_ae.whitening, c3, r4, ss, f1, 'left', 'top'),
+            (my_ae.alphaBias, c3, r2, ss, f1, 'left', 'top'),
+            (my_ae.beta, c3, r3, ss, f1, 'left', 'top'),
+            ("", c3, r4, ss, f1, 'left', 'top'),
             ("1/" + str(my_ae.sub_scale), c4, r1, ss, f1, 'left', 'top'),
             (my_ae.Wtransport, c4, r2, ss, f1, 'left', 'top'),
-            (my_ae.optimizer, c4, r3, ss, f1, 'left', 'top'),
+            (my_ae.normalization, c4, r3, ss, f1, 'left', 'top'),
+            (my_ae.whitening, c4, r4, ss, f1, 'left', 'top'),
+            (my_ae.optimizer, c5, r1, ss, f1, 'left', 'top'),
+            ("", c5, r2, ss, f1, 'left', 'top'),
+            ("", c5, r3, ss, f1, 'left', 'top'),
+            ("", c5, r4, ss, f1, 'left', 'top'),
+
             ("Koo Wells", c6, r1, ss, f1, 'left', 'top'),
             (my_ae.exp_date, c6, r2, ss, f1, 'left', 'top'),
             ("None", c6, r3, ss, f1, 'left', 'top'),
@@ -743,7 +749,7 @@ class AEReport(object):
 
     def gray_scale(self, w):
         b = w - np.min(w) * np.ones(len(w))
-        bb =  b / np.max(b + 0.00001) * 255
+        bb =  b / np.max(b + 0.00001) * 255.0
         c = bb.astype(np.int64)
         return c
 

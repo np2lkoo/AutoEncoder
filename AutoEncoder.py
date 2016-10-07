@@ -71,6 +71,8 @@ class KooAutoEncoder(object):
 
         # Set the match of learning rate in the activation function
         self.alpha = self.func.get_alpha()
+        self.alphaBias = self.func.get_alphaBias()
+        
         # Set the report object to view the results.
         self.report = AEReport()
 
@@ -141,7 +143,7 @@ class KooAutoEncoder(object):
         #cost =  - np.sum((1. / 2) * (x - z) * (z - x)) / self.W1.size    #Square error mean
         return cost
 
-    def get_cost_and_grad(self, x_batch, x2_batch, dnum):
+    def get_cost_and_grad(self, x_batch, t_batch, dnum):
         cost = 0.
         grad_W1 = np.zeros(self.W1.shape)
         grad_W2 = np.zeros(self.W2.shape)
@@ -152,7 +154,7 @@ class KooAutoEncoder(object):
         ii = 0
         for i in range(len(x_batch)):
             x = x_batch[i]
-            x2 = x2_batch[i]
+            t = t_batch[i]
             tilde_x = self.corrupt(x, self.noise)
             p = self.encode(tilde_x)
             p = p * mask[ii]
@@ -161,9 +163,9 @@ class KooAutoEncoder(object):
                 y_adj = y * self.n_hidden / adjust[ii]
                 y = y_adj * (y_adj < 1.0) + 1.0 * (y_adj >= 1.0)
             else:
-                y = x2
-            cost += self.get_cost(x2, y)
-            delta1 = - (x2 - y)
+                y = t
+            cost += self.get_cost(t, y)
+            delta1 = - (t - y)
 
             if self.untied:
                 grad_W2 += np.outer(delta1, p)
@@ -186,7 +188,7 @@ class KooAutoEncoder(object):
         return cost, grad_W1, grad_W2, grad_b1, grad_b2
 
 
-    def train(self, X, X2, epochs=15, batch_size=20):
+    def train(self, X, T, epochs=15, batch_size=20):
         print("---Training Start---")
         self.batch_size = batch_size
         self.exp_date = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
@@ -226,19 +228,19 @@ class KooAutoEncoder(object):
                 offset = (epoch * batch_num * (batch_size / 10) + batch_size / 10 * i) % 6000
                 subbatch = batch_size / 10
                 batch = X[self.k_mnist_start_index[0] + offset:self.k_mnist_start_index[0] + offset + subbatch]
-                batch2 = X2[self.k_mnist_start_index[0] + offset:self.k_mnist_start_index[0] + offset + subbatch]
+                batchT = T[self.k_mnist_start_index[0] + offset:self.k_mnist_start_index[0] + offset + subbatch]
                 # Numbers are to enter the evenly batch.
                 for j in range(10)[1:]:
                     batch = np.concatenate([batch, X[self.k_mnist_start_index[j] + offset:self.k_mnist_start_index[j] + offset + subbatch]], axis=0)
-                    batch2 = np.concatenate([batch2, X2[self.k_mnist_start_index[j] + offset:self.k_mnist_start_index[j] + offset + subbatch]], axis=0)
+                    batchT = np.concatenate([batchT, T[self.k_mnist_start_index[j] + offset:self.k_mnist_start_index[j] + offset + subbatch]], axis=0)
 
-                cost, gradW1, gradW2, gradb1, gradb2 = self.get_cost_and_grad(batch, batch2, len(X))
+                cost, gradW1, gradW2, gradb1, gradb2 = self.get_cost_and_grad(batch, batchT, len(X))
 
                 total_cost += cost
                 self.W1 -= self.alpha * gradW1
                 self.W2 -= self.alpha * gradW2
-                self.b1 -= self.alpha * gradb1
-                self.b2 -= self.alpha * gradb2
+                self.b1 -= self.alpha * self.alphaBias * gradb1
+                self.b2 -= self.alpha * self.alphaBias * gradb2
 
                 grad_sum = gradW1.sum() + gradW2.sum() + gradb1.sum() + gradb2.sum()
 
@@ -351,6 +353,11 @@ class ActivateFunction(object):
     def get_alpha(cls):
         raise NotImplementedError()
 
+    @classmethod
+    # @abstractmethod
+    def get_alphaBias(cls):
+        raise NotImplementedError()
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Define the activate function
@@ -365,6 +372,9 @@ class Sigmoid(ActivateFunction):
     def get_alpha(cls):
         return 0.26     #Experience value
 
+    def get_alphaBias(cls):
+        return 3.10     #Experience value
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 class Tanh(ActivateFunction):
@@ -376,6 +386,9 @@ class Tanh(ActivateFunction):
 
     def get_alpha(cls):
         return 0.04
+
+    def get_alphaBias(cls):
+        return 1.00     #Experience value
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -389,6 +402,9 @@ class ReLU(ActivateFunction):
     def get_alpha(cls):
         return 0.02
 
+    def get_alphaBias(cls):
+        return 1.00     #Experience value
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 class StepReLU(ActivateFunction):
@@ -401,6 +417,9 @@ class StepReLU(ActivateFunction):
 
     def get_alpha(cls):
         return 0.022
+
+    def get_alphaBias(cls):
+        return 1.00     #Experience value
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -417,6 +436,9 @@ class LeakyReLU(ActivateFunction):
     def get_alpha(cls):
         return 0.07
 
+    def get_alphaBias(cls):
+        return 1.00     #Experience value
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 class LeakyStepReLU(ActivateFunction):
@@ -432,6 +454,9 @@ class LeakyStepReLU(ActivateFunction):
     def get_alpha(cls):
         return 0.06
 
+    def get_alphaBias(cls):
+        return 1.00     #Experience value
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 class Liner(ActivateFunction):
@@ -445,6 +470,9 @@ class Liner(ActivateFunction):
     def get_alpha(cls):
         return 0.010
 
+    def get_alphaBias(cls):
+        return 1.00     #Experience value
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 class ABS(ActivateFunction):
@@ -457,6 +485,9 @@ class ABS(ActivateFunction):
 
     def get_alpha(cls):
         return 0.01
+
+    def get_alphaBias(cls):
+        return 1.00  # Experience value
 
 # ----------------------------------------------------------------------------------------------------------------------
 # The definition of the class is over
