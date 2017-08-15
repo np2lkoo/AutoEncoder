@@ -116,7 +116,7 @@ class KooAutoEncoder(object):
 
     def drop_mask(self, visible, p):
         if p == 0:
-            mask = np.ones(visible, self.n_hidden)
+            mask = np.ones((visible, self.n_hidden))
         else:
             mask = 1 * np.array(self.rng2.uniform(low=0, high=1, size=(visible, self.n_hidden))) >= p
 
