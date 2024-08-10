@@ -31,9 +31,9 @@ Only report part was made by myself (and it's so complicated).
  * numpy 2.0.1
  * scipy 1.14.0
  * sklearn 0.17.1 -> scikit-learn 1.5.1
- * Pillow 3.3.1 -> 10.4.0
- * matplotlib 1.5.3 -> 3.9.1.post1
- * pandas 0.18.1 -> 2.2.2
+ * Pillow 10.4.0
+ * matplotlib 3.9.1.post1
+ * pandas 2.2.2
  * (and jupyter???)
 
 
