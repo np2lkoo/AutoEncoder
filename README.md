@@ -26,6 +26,7 @@ Only report part was made by myself (and it's so complicated).
 ## Requirement
   * This program work at python 2 and 3.
   * I checked on Python 2.1.7 and 3.5.2.
+  * Now congerting to 3.11.x!!!
 
   libraly is following
  * numpy 1.11.1
