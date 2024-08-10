@@ -81,20 +81,20 @@ class AEReport(object):
         ax2.plot(data, lw=1)
         # ax2.set_title("Cost/Epoch",  horizontalalignment='left', verticalalignment='bottom')
         ax2.set_ylabel("Cost  (log scale)")
-        ax2.set_xlabel("Cost Fig.  horizontal axis=epoch")
+        ax2.set_xlabel("Cost Fig. horizontal axis=SubEpoch")
         ax2.set_yscale('log')
         #ax2.set_ylim(plt.ylim()[0], 10.0) #Upper Limit 10.0
         #ax2.set_ylim(1, 10)
 
         print(" Fig. Cost/epoch")
         ent_digit = [[], [], [], [], [], [], [], [], [], [], ]
-        for i in range(np.int(np.log2(my_ae.epoch_limit) + 1)):
+        for i in range(int(np.log2(my_ae.epoch_limit) + 1)):
             ent = self.delta_x_entropy(my_ae, my_train, i)
             #print("period:%d " % i)
             #print(ent)
             for j in range(10):
                 ent_digit[j].append(ent[j])
-        x = 2 ** np.array(range(np.int(np.log2(my_ae.epoch_limit) + 1)))
+        x = 2 ** np.array(range(int(np.log2(my_ae.epoch_limit) + 1)))
         #print(x)
         #print(ent_digit[0])
         for i in range(10):
@@ -103,7 +103,7 @@ class AEReport(object):
         ax2tw.set_ylabel("total entropy(|y - x_hat|)/100")
 
     def draw_last_Wb_range(self, my_ae, my_train):
-        my_period = np.int(np.log2(my_ae.epoch_limit) + 1)
+        my_period = int(np.log2(my_ae.epoch_limit) + 1)
         dataW = my_ae.get_W1(my_period)
         dataB = my_ae.get_b1(my_period)
         rd = self.repdef['LastWRangeFig']
@@ -142,7 +142,7 @@ class AEReport(object):
         print(" Fig. W Min/Mean/Max")
 
     def draw_last_Z_range(self, my_ae, my_train):
-        my_period = np.int(np.log2(my_ae.epoch_limit) + 1)
+        my_period = int(np.log2(my_ae.epoch_limit) + 1)
         dataW = my_ae.get_W1(my_period)
         dataB = my_ae.get_b1(my_period)
         rd = self.repdef['LastZFig']
@@ -258,7 +258,7 @@ class AEReport(object):
         f1 = 'serif'
         use_W = 0.0
         for sample in range(10):
-            z = my_ae.encode_by_snap(my_ae.get_W1(np.int(np.log2(my_ae.epoch_limit)) + 1), my_ae.get_b1(np.int(np.log2(my_ae.epoch_limit)) + 1), my_train[my_ae.get_mnist_start_index(sample)])
+            z = my_ae.encode_by_snap(my_ae.get_W1(int(np.log2(my_ae.epoch_limit)) + 1), my_ae.get_b1(int(np.log2(my_ae.epoch_limit)) + 1), my_train[my_ae.get_mnist_start_index(sample)])
             use_W += float(np.sum(1 * (np.abs(z) > 0.2))) / len(z)
         userW_ratio = use_W / 10
         wreg, wvar = self.region_ratio(my_ae)
@@ -266,8 +266,8 @@ class AEReport(object):
         norm_L2 = 0.0
         mean_sp = 0.0
         for sample in range(10):
-            z = my_ae.encode_by_snap(my_ae.get_W1(np.int(np.log2(my_ae.epoch_limit)) + 1),
-                                     my_ae.get_b1(np.int(np.log2(my_ae.epoch_limit)) + 1),
+            z = my_ae.encode_by_snap(my_ae.get_W1(int(np.log2(my_ae.epoch_limit)) + 1),
+                                     my_ae.get_b1(int(np.log2(my_ae.epoch_limit)) + 1),
                                      my_train[my_ae.get_mnist_start_index(sample)])
             mean_sp += np.sum((np.abs(z) / np.max(z)) ** 0.5)
         sp_simple_ratio = mean_sp / len(z) / 10 * 100
@@ -276,7 +276,7 @@ class AEReport(object):
                   ("Total Training time(sec):", c1, r1, sl, f1, 'right', 'top'),
                   ("{0:.1f}".format(my_ae.traintime), c1, r1, sl, f1, 'left', 'top'),
                   ("W EntropyGain:", c1, r2, sl, f1, 'right', 'top'),
-                  ("{0:.1f}".format(self.delta_entropy(my_ae.get_W1(0), my_ae.get_W1(np.int(np.log2(my_ae.epoch_limit)) + 1))), c1, r2, sl, f1, 'left', 'top'),
+                  ("{0:.1f}".format(self.delta_entropy(my_ae.get_W1(0), my_ae.get_W1(int(np.log2(my_ae.epoch_limit)) + 1))), c1, r2, sl, f1, 'left', 'top'),
                   ("Sparse simple Ratio(%):", c1, r3, sl, f1, 'right', 'top'),
                   ("{0:.2f}".format(sp_simple_ratio), c1, r3, sl, f1, 'left', 'top'),
                   ("Last Entropy Diff:", c1, r4, sl, f1, 'right', 'top'),
@@ -301,7 +301,7 @@ class AEReport(object):
         print(" Footer")
 
     def region_ratio(self, my_ae):
-        period = np.int(np.log2(my_ae.epoch_limit) + 1)
+        period = int(np.log2(my_ae.epoch_limit) + 1)
         r = 0
         v = 0
         for j in range(len(my_ae.get_W1(period))):
@@ -418,7 +418,7 @@ class AEReport(object):
                  ("mean", c6, r3, sm, f1, 'right', 'top'),
                  ("Wmin", c6, r5, sm, f1, 'right', 'top'),
                  ]
-        for period in range(np.int(np.log2(my_ae.epoch_limit)) + 2):  # Since output a initial state, range + 2
+        for period in range(int(np.log2(my_ae.epoch_limit)) + 2):  # Since output a initial state, range + 2
             rd = self.repdef['Index1']
             axindex = plt.subplot(self.gs[rd[0] + period, rd[1]:(rd[1] + rd[3])])
             axindex.set_xticks([])
@@ -455,7 +455,7 @@ class AEReport(object):
                  ("Time", c6, r1, sm, f1, 'right', 'top'),
                  ("Wgain", c6, r3, sm, f1, 'right', 'top'),
                  ]
-        for period in range(np.int(np.log2(my_ae.epoch_limit)) + 2):    # Since output a initial state, range + 2
+        for period in range(int(np.log2(my_ae.epoch_limit)) + 2):    # Since output a initial state, range + 2
             rd = self.repdef['Index2']
             axindex = plt.subplot(self.gs[rd[0] + period, rd[1]:(rd[1] + rd[3])])
             axindex.set_xticks([])
@@ -496,7 +496,7 @@ class AEReport(object):
                  ("imgdiff", c6, r3, sm, f1, 'right', 'top'),
                  ("entdiff", c6, r5, sm, f1, 'right', 'top'),
                  ]
-        for period in range(np.int(np.log2(my_ae.epoch_limit)) + 2):    # Since output a initial state, range + 2
+        for period in range(int(np.log2(my_ae.epoch_limit)) + 2):    # Since output a initial state, range + 2
             rd = self.repdef['Index5']
             axindex = plt.subplot(self.gs[rd[0] + period, rd[1]:(rd[1] + rd[3])])
             axindex.set_xticks([])
@@ -527,7 +527,7 @@ class AEReport(object):
         digit_x_dif = np.zeros((10, my_ae.n_visible))
         digit_mean_ent = 0.0
         digit_img_dif = 0.0
-        # period = np.int(np.log2(my_ae.epoch_limit))
+        # period = int(np.log2(my_ae.epoch_limit))
         for offset in range(count):
             for sample in range(10):
                 org_img = my_train[my_ae.get_mnist_start_index(sample) + offset]
@@ -585,7 +585,7 @@ class AEReport(object):
         print(" index4")
 
     def report_w_x_hat(self, my_ae, my_train, my_select):
-        for period in range(np.int(np.log2(my_ae.epoch_limit)) + 2):    # Since output a initial state, range + 2
+        for period in range(int(np.log2(my_ae.epoch_limit)) + 2):    # Since output a initial state, range + 2
             targetW = my_ae.get_W1(period)
             rd = self.repdef['W']
             rd2 = self.repdef['x_hat']
@@ -608,10 +608,10 @@ class AEReport(object):
             print(" x_hat Fig. Period %d (Epoch %d)" % (period, 2 ** (period - 1)))
 
     def report_w_range(self, my_ae, my_select):
-        last_period = np.int(np.log2(my_ae.epoch_limit))
+        last_period = int(np.log2(my_ae.epoch_limit))
         last_W = my_ae.get_W1(last_period)
         w_limit = np.max((np.max(last_W), -np.min(last_W)))
-        for period in range(np.int(np.log2(my_ae.epoch_limit)) + 2):    # Since output a initial state, range + 2
+        for period in range(int(np.log2(my_ae.epoch_limit)) + 2):    # Since output a initial state, range + 2
             targetW = my_ae.get_W1(period)
             rd = self.repdef['W_range']
             # Hidden Layer W
@@ -620,10 +620,10 @@ class AEReport(object):
         print(" W Range Fig.")
 
     def report_b_range(self, my_ae, my_select):
-        last_period = np.int(np.log2(my_ae.epoch_limit))
+        last_period = int(np.log2(my_ae.epoch_limit))
         last_B = my_ae.get_b1(last_period)
         b_limit = np.max((np.max(last_B), -np.min(last_B)))
-        for period in range(np.int(np.log2(my_ae.epoch_limit)) + 2):    # Since output a initial state, range + 2
+        for period in range(int(np.log2(my_ae.epoch_limit)) + 2):    # Since output a initial state, range + 2
             targetB = my_ae.get_b1(period)
             rd = self.repdef['b_range']
             # Bias b
@@ -656,7 +656,11 @@ class AEReport(object):
         y_min = np.zeros(10)
         x = range(10)
         for i in x:
-            y_max = np.append(y_max, np.array(np.mean([my_b[my_select[i]]])))
+            if (np.mean([my_b[my_select[i]]]) < 0):
+                y_max = np.append(y_max, 0.0)
+                y_min[i] = np.array(np.mean([my_b[my_select[i]]]))
+            else:
+                y_max = np.append(y_max, np.array(np.mean([my_b[my_select[i]]])))
         y_low = y_mean - y_min
         y_up = y_max - y_mean
         a_err = [y_low, y_up]
@@ -669,7 +673,7 @@ class AEReport(object):
 
     # Test method
     def report_w3d(self, my_ae):
-        for period in range(np.int(np.log2(my_ae.epoch_limit) + 1)):
+        for period in range(int(np.log2(my_ae.epoch_limit) + 1)):
             targetW = my_ae.get_W1(period)
             x = range(27)
             y = range(27)
@@ -734,7 +738,7 @@ class AEReport(object):
         count = 100
         digit_x_ent = np.zeros((10, 784))
         digit_mean_ent = np.zeros(10)
-        #period = np.int(np.log2(my_ae.epoch_limit))
+        #period = int(np.log2(my_ae.epoch_limit))
         for offset in range(count):
             for sample in range(10):
                 org_img = my_train[my_ae.get_mnist_start_index(sample) + offset]
@@ -767,7 +771,7 @@ class AEReport(object):
 
     def show_aereport(self, my_ae, my_xtrain, my_ytrain, my_select):
         print("Report Creating Now...")
-        digit_mean_ent, digit_x_ent, digit_img_dif, digit_x_dif = self.get_ent_diff(my_ae, my_xtrain, np.int(np.log2(my_ae.epoch_limit)) + 1)
+        digit_mean_ent, digit_x_ent, digit_img_dif, digit_x_dif = self.get_ent_diff(my_ae, my_xtrain, int(np.log2(my_ae.epoch_limit)) + 1)
         disp = "{0:.1f}".format(digit_mean_ent)
         disp2 = "{0:.1f}".format(digit_img_dif)
         print("LAST Entropy Diff = " + disp + "/" + disp2)
@@ -806,8 +810,7 @@ class AEReport(object):
                     "_Wtran" + my_ae.Wtransport + ".png",
                     bbox_inches="tight", pad_inches=0.05)
 
-        plt.show()
-
+        plt.show()  # Bug Show 2Fig.(one is blank)
 
     # For Experiment Code
     def mkKernel(self, ks, sig, th, lm, ps):

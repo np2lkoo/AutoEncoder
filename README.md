@@ -24,18 +24,17 @@ Only report part was made by myself (and it's so complicated).
   1. Example program encode/decode MNIST data, but core autoencoder class can use any purpose.
 
 ## Requirement
-  * This program work at python 2 and 3.
-  * I checked on Python 2.1.7 and 3.5.2.
-  * Now congerting to 3.11.x!!!
+  * This program work at 3.11.x
+  * I am checking on Python 3.11.x Now!
 
   libraly is following
- * numpy 1.11.1
- * scipy 0.18.0
- * sklearn 0.17.1
- * PIL 2.0 / Pillow 3.3.1
- * matplotlib 1.5.3
- * pandas 0.18.1
- * (and jupyter)
+ * numpy 2.0.1
+ * scipy 1.14.0
+ * sklearn 0.17.1 -> scikit-learn 1.5.1
+ * Pillow 3.3.1 -> 10.4.0
+ * matplotlib 1.5.3 -> 3.9.1.post1
+ * pandas 0.18.1 -> 2.2.2
+ * (and jupyter???)
 
 
 ## Usage
@@ -177,6 +176,8 @@ Only report part was made by myself (and it's so complicated).
 
 [MIT](https://github.com/tcnksm/tool/blob/master/LICENCE)
 
+## BUG
+** show 2 figure (and one is blank)
 ## Author
 
 [np2lkoo](https://github.com/np2lkoo)

@@ -208,8 +208,8 @@ class KooAutoEncoder(object):
         # Prepare the data For Calibration
         self.m_cal.append(np.zeros(X[0].shape))
         self.m_cal.append(np.mean(X) * np.ones(X[0].shape))
-        main_start_time = time.clock()
-        period_start_time = time.clock()
+        main_start_time = time.process_time()
+        period_start_time = time.process_time()
 
         # Record the initial state
         self.W1rec.append(self.W1.copy())
@@ -221,12 +221,12 @@ class KooAutoEncoder(object):
         batch_num = int(len(X) / (batch_size * self.sub_scale))
         for epoch in range(epochs):
             total_cost = 0.0
-            start_time = time.clock()
+            start_time = time.process_time()
             for i in range(batch_num):
                 ###
                 # Loop 1/Subscale
-                offset = (epoch * batch_num * (batch_size / 10) + batch_size / 10 * i) % 6000
-                subbatch = batch_size / 10
+                offset = int((epoch * batch_num * (batch_size / 10) + batch_size / 10 * i) % 6000)
+                subbatch = int(batch_size / 10)
                 batch = X[self.k_mnist_start_index[0] + offset:self.k_mnist_start_index[0] + offset + subbatch]
                 batchT = T[self.k_mnist_start_index[0] + offset:self.k_mnist_start_index[0] + offset + subbatch]
                 # Numbers are to enter the evenly batch.
@@ -244,13 +244,13 @@ class KooAutoEncoder(object):
 
                 grad_sum = gradW1.sum() + gradW2.sum() + gradb1.sum() + gradb2.sum()
 
-            end_time = time.clock()
+            end_time = time.process_time()
             cost = (1. * self.sub_scale) * total_cost
-            print ("epoch = %d: cost = %f: \ttime = %.3f sec" % (epoch + 1, cost, (end_time - start_time)))
+            print ("sub epoch = %d: cost = %f: \ttime = %.3f sec" % (epoch + 1, cost, (end_time - start_time)))
             self.costrec.append(cost)
             # Record an intermediate result in the period 2**n - 1
             if epoch in (2 ** np.array(range(20)) - 1):
-                print ("/ period = %d ---------- %.3f sec" % ((np.int(np.log2(epoch + 1)) + 1), (end_time - period_start_time)))
+                print ("/ period = %d ---------- %.3f sec" % ((int(np.log2(epoch + 1)) + 1), (end_time - period_start_time)))
                 self.W1rec.append(self.W1.copy())
                 self.W2rec.append(self.W2.copy())
                 self.b1rec.append(self.b1.copy())

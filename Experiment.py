@@ -3,7 +3,7 @@
 
 from __future__ import print_function
 
-from sklearn.datasets import fetch_mldata
+from sklearn.datasets import fetch_openml
 import numpy as np
 from AutoEncoder import KooAutoEncoder
 
@@ -26,20 +26,18 @@ par_train_shuffle = False  # Shuffle the data at the time of training
 # ----------------------------------------------------------------------------------------------------------------------
 print('---Start---')
 print('load MNIST dataset')
-mnist = fetch_mldata('MNIST original')
+mnist_x, mnist_y = fetch_openml('mnist_784', version=1, data_home=".", return_X_y=True)
 
 # mnist.data : 70,000 784-dimensional vector data
-mnist.data = mnist.data.astype(np.float32)
-mnist.data /= 255.0         # 0-1 of the data conversion
-
-# mnist.target : Correct data (teacher data)
-mnist.target = mnist.target.astype(np.int32)
+X = mnist_x.to_numpy().astype("float32")
+X /= 255.0         # 0-1 of the data conversion
+y = mnist_y.to_numpy().astype(int)
 
 N = 60000
-y_train, y_test = np.split(mnist.data.copy(), [N])
+y_train, y_test = np.split(X.copy(), [N])
 N_test = y_test.shape[0]
 
-x_train, x_test = np.split(mnist.data, [N])
+x_train, x_test = np.split(X, [N])
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Data of MNIST has been prepared so far.
